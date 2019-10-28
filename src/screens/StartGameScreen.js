@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, TextInput, Button, Keyboard } from 'react-nativ
 import Card from '../components/Card';
 import Colors from '../constants/color';
 import Input from '../components/Input';
+import NumberContainer from '../components/NumberContainer';
 
 const StartGameScreen = props => {
   const [enteredValue, setEnteredValue] = useState('');
@@ -17,6 +18,28 @@ const StartGameScreen = props => {
   const resetInputHandler = () => {
     setEnteredValue('');
     setConfirmed(false);
+  }
+
+  const confirmInputHandler = () => {
+    const enteredNumber = parseInt(enteredValue, 10);
+    if (isNaN(enteredNumber) || enteredNumber <= 0 || enteredNumber >= 99) {
+      return
+    }
+    setConfirmed(true);
+    setSelectedNumber(enteredNumber);
+    setEnteredValue('');
+    Keyboard.dismiss();
+  }
+
+  let seletedOutput;
+  if (confirmed) {
+    seletedOutput = (
+      <Card style={styles.summaryContainer}>
+        <Text>You Selected</Text>
+        <NumberContainer>{selectedNumber}</NumberContainer>
+        <Button title="START GAME" />
+      </Card>
+    )
   }
 
   return (
@@ -39,10 +62,15 @@ const StartGameScreen = props => {
             <Button title="Reset" onPress={resetInputHandler} />
           </View>
           <View style={styles.button}>
-            <Button title="Confirm" onPress={() => {}} color={Colors.primary} />
+            <Button
+              title="Confirm"
+              onPress={confirmInputHandler}
+              color={Colors.primary}
+            />
           </View>
         </View>
       </Card>
+      {seletedOutput}
     </View>
   );
 };
@@ -71,8 +99,12 @@ const styles = StyleSheet.create({
     width: 100
   },
   input: {
-    width:50,
+    width: 50,
     textAlign: 'center',
+  },
+  summaryContainer: {
+    marginTop: 20,
+    alignItems: 'center',
   }
 });
 
